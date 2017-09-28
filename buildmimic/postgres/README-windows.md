@@ -71,17 +71,55 @@ CREATE DATABASE mimic OWNER postgres;
 ```
 
 If this is the first time you are installing MIMIC, the "DROP DATABASE" command will warn you that no database existed - this is expected behaviour.
-We have now created the database `mimic`, owned by user `postgres`. For experienced users: these defaults are not required, and the subsequent load scripts will work regardless of what values you set, as long as you adjust the upcoming code appropriately. Ultimately, we will load the data into a `mimiciii` schema of whatever database we are connected to. The rest of this document will assume the default values are used, i.e. a database `mimic` owned by user `postgres`.
 
+We have now created the database `mimic`, owned by user `postgres`.
 Now, connect to the `mimic` database.
 
 ```sql
 \c mimic;
 ```
 
+You should see your prompt now indicates you are connected to mimic (you should see the word `mimic`).
+Ultimately, we will create tables under a "schema", which is a sublayer under the database layer. The hierarchy will roughly look like this:
+
+    database
+    |
+    |__schema
+       |
+       |__table 1
+       |
+       |__table 2
+       (etc)
+
+The default schema for a database is `public`.
+As a convention, we use `mimiciii` as the name of our schema. Let's create a schema:
+
+```sql
+DROP SCHEMA IF EXISTS mimiciii;
+CREATE SCHEMA mimiciii;
+```
+
+Now, let's specify that we'd like to focus only on the `mimiciii` schema:
+
+```sql
+SET SEARCH_PATH TO mimiciii;
+```
+
+All subsequent create, drop, and select statements will only look in the `mimiciii` schema.
+
+For experienced users: these defaults are not required, and the subsequent load scripts will work regardless of what values you set, as long as you adjust the upcoming code appropriately.
+
 ## Create the tables
 
-Run the create tables script (note: this assumes that the create table script is in the current directory - if it is not, see below). This script creates the `mimiciii` schema and populates the schema with empty tables which will eventually store the data.
+First, let's prepare to load the data by specifying running a few commands:
+
+```sql
+\set ON_ERROR_STOP 1
+```
+
+This command above tells the script to stop execution upon any error: we'd rather stop at an error so we know that our database has not loaded fully.
+
+Now we will run create tables script (note: this assumes that the create table script is in the current directory - if it is not, see below). This script creates the `mimiciii` schema and populates the schema with empty tables which will eventually store the data.
 
 ```sql
 \i postgres_create_tables.sql
@@ -96,15 +134,6 @@ If you get the error `postgres_create_tables.sql: No such file or directory` tha
 If you see a lot of "NOTICE: table does not exist" don't worry, that's normal. The script tries to delete the table before it creates it.
 
 ## Prepare to load the data into the tables
-
-First, let's prepare to load the data by specifying running a few commands:
-
-```sql
-\set ON_ERROR_STOP 1
-SET search_path TO mimiciii;
-```
-
-The first command above tells the script to stop execution upon any error: we'd rather stop at an error so we know that our database has not loaded fully. The second command informs the program that our tables are located on the `mimiciii` schema (this schema was created in `postgres_create_tables.sql`)
 
 Next we will specify the location of our data. You'll likely need to change this to where you store your MIMIC data.
 
