@@ -1,5 +1,3 @@
-
-
 DROP MATERIALIZED VIEW IF EXISTS pivoted_lab CASCADE;
 CREATE MATERIALIZED VIEW pivoted_lab as
 SELECT
@@ -95,7 +93,6 @@ FROM
       WHEN itemid = 51301 and valuenum >  1000 THEN null -- 'WBC'
     ELSE le.valuenum
     END AS valuenum
-
   FROM labevents le
   WHERE le.ITEMID in
   (
@@ -127,7 +124,7 @@ FROM
     51301, -- WHITE BLOOD CELLS | HEMATOLOGY | BLOOD | 753301
     51300  -- WBC COUNT | HEMATOLOGY | BLOOD | 2371
   )
-  AND valuenum IS NOT null AND valuenum > 0 -- lab values cannot be 0 and cannot be negative
+  AND valuenum IS NOT NULL AND valuenum > 0 -- lab values cannot be 0 and cannot be negative
 ) pvt
 GROUP BY pvt.hadm_id, pvt.charttime
 ORDER BY pvt.hadm_id, pvt.charttime;
