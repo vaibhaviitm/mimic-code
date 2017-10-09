@@ -117,7 +117,7 @@ with mv as
   select
     icustay_id
     -- this carries over the previous charttime
-    , LAG(CHARTTIME, 1) OVER (partition by icustay_id, central_line order by charttime) as charttime_lag
+    , LAG(CHARTTIME, 1) OVER (partition by icustay_id order by charttime) as charttime_lag
     , charttime
   from cv
 )
