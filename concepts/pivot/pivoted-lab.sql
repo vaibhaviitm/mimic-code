@@ -1,6 +1,5 @@
-
-DROP TABLE IF EXISTS pivoted_lab CASCADE;
-CREATE TABLE pivoted_lab AS
+DROP MATERIALIZED VIEW IF EXISTS pivoted_lab CASCADE;
+CREATE MATERIALIZED VIEW pivoted_lab as
 SELECT
     pvt.hadm_id, pvt.charttime
   , avg(CASE WHEN label = 'ANION GAP' THEN valuenum ELSE null END) as ANIONGAP
@@ -26,7 +25,7 @@ FROM
 ( -- begin query that extracts the data
   SELECT le.hadm_id, le.charttime
   -- here we assign labels to ITEMIDs
-  -- this also fuses together multiple ITEMIDs containing the same data
+  -- we can also fuse together multiple ITEMIDs containing the same data
   , CASE
         WHEN itemid = 50868 THEN 'ANION GAP'
         WHEN itemid = 50862 THEN 'ALBUMIN'

@@ -101,7 +101,7 @@ group by pvt.hadm_id, pvt.charttime
 -- remove observations if there is more than one specimen listed
 -- we do not know whether these are arterial or mixed venous, etc...
 -- happily this is a small fraction of the total number of observations
-having count(case when itemid = 50800 then value else null end)<2
+having sum(case when label = 'SPECIMEN' then 1 else 0 end)<2
 order by pvt.hadm_id, pvt.charttime;
 
 DROP MATERIALIZED VIEW IF EXISTS pivoted_bg_art CASCADE;
@@ -163,7 +163,7 @@ with stg_spo2 as
 select bg.*
   , ROW_NUMBER() OVER (partition by bg.hadm_id, bg.charttime order by s1.charttime DESC) as lastRowSpO2
   , s1.spo2
-from hourly_bg bg
+from pivoted_bg bg
 left join stg_spo2 s1
   -- same hospitalization
   on  bg.hadm_id = s1.hadm_id
@@ -175,7 +175,6 @@ where bg.po2 is not null
 (
 select bg.*
   , ROW_NUMBER() OVER (partition by bg.hadm_id, bg.charttime order by s2.charttime DESC) as lastRowFiO2
-  , ROW_NUMBER() over (partition by bg.hadm_id, bg.hr order by bg.charttime DESC) as lastRowInHour
   , s2.fio2_chartevents
 
   -- create our specimen prediction
@@ -258,7 +257,6 @@ select
   , REQUIREDO2
 from stg3
 where lastRowFiO2 = 1 -- only the most recent FiO2
-and lastRowInHour = 1 -- only the most recent row for the hour
 -- restrict it to *only* arterial samples
 and (SPECIMEN = 'ART' or SPECIMEN_PROB > 0.75)
 order by hadm_id, charttime;
