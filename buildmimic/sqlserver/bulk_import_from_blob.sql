@@ -41,7 +41,7 @@ WITH (	TYPE = BLOB_STORAGE,
 *								2. LOAD											*
 *********************************************************************************/
 
--- 2.1. INSERT CSV file into Product table
+
 BULK INSERT PATIENTS
 FROM 'PATIENTS.csv'
 WITH (	DATA_SOURCE = 'MyAzureBlobStorage2',
@@ -59,8 +59,7 @@ WITH (	DATA_SOURCE = 'MyAzureBlobStorage2',
                 ROWTERMINATOR = '0x0a',
 		TABLOCK); 
 
---succeeded w dropping constrainta
--- Violation of UNIQUE KEY constraint 'CALLOUT_CURRENTRESERVATIONTIME'. Cannot insert duplicate key in object 'dbo.CALLOUT'. The duplicate key value is (<NULL>)
+
 BULK INSERT CALLOUT
 FROM 'CALLOUT.csv'
 WITH (	DATA_SOURCE = 'MyAzureBlobStorage2',
@@ -78,7 +77,7 @@ WITH (	DATA_SOURCE = 'MyAzureBlobStorage2',
                 ROWTERMINATOR = '0x0a',
 		TABLOCK); 
 
---Cannot bulk load. The file "CHARTEVENTS.csv" does not exist or you don't have file access rights.
+
 
 BULK INSERT CHARTEVENTS
 FROM 'CHARTEVENTS.csv'
@@ -155,8 +154,7 @@ WITH (	DATA_SOURCE = 'MyAzureBlobStorage2',
                 ROWTERMINATOR = '0x0a',
 		TABLOCK); 
 
--- corrected by itemid from smallint to int
--- Bulk load data conversion error (overflow) for row 2, column 2 (ITEMID)
+
 BULK INSERT D_LABITEMS
 FROM 'D_LABITEMS.csv'
 WITH (	DATA_SOURCE = 'MyAzureBlobStorage2',
@@ -174,7 +172,6 @@ WITH (	DATA_SOURCE = 'MyAzureBlobStorage2',
                 ROWTERMINATOR = '0x0a',
 		TABLOCK); 
 
--- Cannot bulk load. The file "INPUTEVENTS_CV.csv" does not exist or you don't have file access rights.
 BULK INSERT INPUTEVENTS_CV
 FROM 'INPUTEVENTS_CV.csv'
 WITH (	DATA_SOURCE = 'MyAzureBlobStorage2',
@@ -192,8 +189,7 @@ WITH (	DATA_SOURCE = 'MyAzureBlobStorage2',
                 ROWTERMINATOR = '0x0a',
 		TABLOCK); 
 
--- corrected by itemid from smallint to int
--- Bulk load data conversion error (overflow) for row 2, column 4 (ITEMID)
+
 BULK INSERT LABEVENTS
 FROM 'LABEVENTS.csv'
 WITH (	DATA_SOURCE = 'MyAzureBlobStorage2',
@@ -210,7 +206,6 @@ WITH (	DATA_SOURCE = 'MyAzureBlobStorage2',
                 ROWTERMINATOR = '0x0a',
 		TABLOCK); 
 
--- Cannot bulk load. The file "NOTEEVENTS.csv" does not exist or you don't have file access rights.
 BULK INSERT NOTEEVENTS
 FROM 'NOTEEVENTS.csv'
 WITH (	DATA_SOURCE = 'MyAzureBlobStorage2',
